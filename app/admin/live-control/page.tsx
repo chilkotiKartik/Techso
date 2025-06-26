@@ -504,4 +504,89 @@ export default function AdminLiveControl() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Connected Users */}
         <div className="lg:col-span-1">
-          <motion.\
+          <motion.div
+            className="bg-card/50 backdrop-blur-sm rounded-lg p-4 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Connected Users
+            </h2>
+            <ul className="space-y-3">
+              {connectedUsers.map((user) => (
+                <li key={user.id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(user.status)}
+                    <span className={`font-medium ${getStatusColor(user.status)}`}>{user.name}</span>
+                    <span className="text-xs text-muted-foreground">({user.role})</span>
+                  </div>
+                  <div className="flex gap-1">
+                    <Button size="sm" variant="outline" onClick={() => changeUserStatus(user.id, "away")}>Away</Button>
+                    <Button size="sm" variant="outline" onClick={() => changeUserStatus(user.id, "busy")}>Busy</Button>
+                    <Button size="sm" variant="outline" onClick={() => changeUserStatus(user.id, "online")}>Online</Button>
+                    <Button size="sm" variant="destructive" onClick={() => kickUser(user.id)}>Kick</Button>
+                    <Button size="sm" variant="secondary" onClick={() => promoteUser(user.id)}>Promote</Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+
+        {/* Activity Feed */}
+        <div className="lg:col-span-2">
+          <motion.div
+            className="bg-card/50 backdrop-blur-sm rounded-lg p-4 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              Recent Activity
+            </h2>
+            <ul className="space-y-3 max-h-96 overflow-y-auto">
+              {recentActivity.map((activity) => (
+                <li key={activity.id} className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(activity.timestamp).toLocaleTimeString()}
+                  </span>
+                  <span className="font-medium">{activity.userName}</span>
+                  <span className="text-muted-foreground">{activity.description}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Broadcast Message */}
+          <motion.div
+            className="bg-card/50 backdrop-blur-sm rounded-lg p-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Broadcast Message
+            </h2>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                className="flex-1 border rounded px-3 py-2"
+                placeholder="Type your message..."
+                value={broadcastMessage}
+                onChange={(e) => setBroadcastMessage(e.target.value)}
+                disabled={isBroadcasting}
+              />
+              <Button onClick={broadcastToAll} disabled={isBroadcasting}>
+                {isBroadcasting ? "Sending..." : "Send"}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  )
+}
